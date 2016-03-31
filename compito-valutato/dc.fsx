@@ -3,8 +3,6 @@
 #r "FsCheck"
 open FsCheck
 
-
-
 (*
   i. Declare suitable types "names" and "childDes" to model the above.
      (Hint: a type abbreviation is enough for names, a tagged type is
@@ -23,7 +21,6 @@ type child = {
   category: Category
 }
 
-
 (* 
   ii. declare a function 
 
@@ -40,12 +37,6 @@ let rec number (cat, list) =
     if x.category = cat
       then number(cat, xs) + 1
       else number(cat, xs)
-
-let listochild = [{surname = "antonio"; category = Daycare};{surname = "caloggero"; category = Daycare}; {surname = "pippo"; category = Nursery}]
-
-printfn "Number in Daycare: %d" (number (Daycare,listochild))
-printfn "Number in Nursery: %d" (number (Nursery,listochild))
-printfn "Number in Recreation: %d" (number (Recreation,listochild))
 
 (*
   ii' Write a property that (partially) validates the number function and
@@ -87,46 +78,40 @@ do Check.Quick prop_NumberTest
           the rest of the list will pay half.
  *)
 
-let rec pay
+let cost c = 
+  match c with
+  | Daycare -> 225
+  | Nursery -> 116
+  | Recreation -> 110
 
+let pay (fname, clist) =
+  
+  let rec remove (fname, clist) =
+    match clist with
+    | [] -> None
+    | x :: xs -> 
+      if x.surname = fname
+        then Some x
+        else remove (fname, xs)
 
-let orderedList = [
-  {
-    surname = "caloggero";
-    category = Daycare
-  };
-  {
-    surname = "Pippo";
-    category = Daycare
-  };
-  {
-    surname = "Pluto";
-    category = Daycare
-  };
-  {
-    surname = "caloggero";
-    category = Nursery
-  };
-  {
-    surname = "Pippo";
-    category = Nursery
-  };
-  {
-    surname = "caloggero";
-    category = Recreation
-  };
-  {
-    surname = "Pluto";
-    category = Recreation
-  }
-]
+  let rec calcCost (mchild, clist) =
+    match clist with
+    | [] -> 0
+    | x :: xs -> 
+      if x.surname = mchild.surname
+        then 
+          if x.category = mchild.category
+          then ((cost x.category) + calcCost (mchild, xs))
+          else (((cost x.category)/2) + calcCost (mchild, xs))
+        else calcCost (mchild, xs)
 
+  let fullPayer = remove (fname, clist)
 
+  calcCost (fullPayer.Value, clist)
 
-
-
-
-
+(*
+  iv. Write some tests and run your program.
+ *)
 
 
 
