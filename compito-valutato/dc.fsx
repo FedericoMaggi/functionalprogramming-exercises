@@ -113,17 +113,79 @@ let pay (fname, clist) =
   iv. Write some tests and run your program.
  *)
 
+let prop_costFunctionTest (cat:Category) =
+  if cat = Daycare
+    then 225 = cost cat
+    else 
+      if cat = Nursery
+        then 116 = cost cat
+        else 
+          if cat = Recreation
+            then  110 = cost cat
+            else
+              false
 
+do Check.Quick prop_costFunctionTest
 
+(* Examples *)
+let daycareArchive = [
+  {
+    surname = "socrate";
+    category = Daycare
+  };
+  {
+    surname = "anassimene";
+    category = Daycare
+  };
+  {
+    surname = "talete";
+    category = Daycare
+  };
+  {
+    surname = "anassimandro";
+    category = Daycare
+  };
+  {
+    surname = "platone";
+    category = Nursery
+  };
+  {
+    surname = "aristotele";
+    category = Nursery
+  };
+  {
+    surname = "plauto";
+    category = Nursery
+  };
+  {
+    surname = "socrate";
+    category = Recreation
+  };
+  {
+    surname = "talete";
+    category = Recreation
+  };
+  {
+    surname = "aristotele";
+    category = Recreation
+  };
+  {
+    surname = "virgilio";
+    category = Recreation
+  };
+  {
+    surname = "platone";
+    category = Recreation
+  }
+]
 
+printfn "number for Daycare: %d" ( number (Daycare, daycareArchive))
+printfn "number for Nursery: %d" ( number (Nursery, daycareArchive))
+printfn "number for Recreation: %d" ( number (Recreation, daycareArchive))
 
-
-
-
-
-
-
-
-
-
-
+printfn "pay aristotele: %d" (pay ("aristotele",daycareArchive))
+printfn "pay anassimene: %d" (pay ("anassimene",daycareArchive))
+printfn "pay socrate: %d" (pay ("socrate",daycareArchive))
+printfn "pay talete: %d" (pay ("talete",daycareArchive))
+printfn "pay plauto: %d" (pay ("plauto",daycareArchive))
+printfn "pay platone: %d" (pay ("platone",daycareArchive))
