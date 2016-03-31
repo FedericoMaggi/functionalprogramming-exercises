@@ -10,7 +10,7 @@ open FsCheck
 
 // La nozione di lista può essere definita come struttura non primitiva
 // Di fatto una lista è un albero sintattico
-type  'a GList =
+type  'a GList = //'
     | GNil
     | GCons of  'a  *  'a GList;;
 
@@ -240,10 +240,10 @@ let rec aeval t env =
 
 let res = aeval et envyx;;
 
-/////////////// MUTREC
+(* MUTUAL RECURSION *)
+// Mutual recursion not done yet.
 
-
-// Example of mutually recursive  function definition:
+// Example of mutually recursive function definition:
 // note the <and> keyword
 
 let rec even n = 
@@ -321,8 +321,8 @@ and namesElement e =
 let l1 = namesElement d1;;
 let l2= namesFileSys d2;;
 
-
-
+(* RECORD *)
+printfn "Record"
 (*
 
 Tuple vs. record
@@ -333,11 +333,11 @@ di una tupla e' la soluzione piu' conveniente.
 
 Infatti:
 
-- due tuple con gli stessi tipi non sono distiguibili
-  + esempio: coppia di float che denota un numero complesso e coordinate geografiche
+- Due tuple con gli stessi tipi non sono distiguibili
+  ad esempio: coppia di float che denota un numero complesso e coordinate geografiche.
 
 - elementi della tupla aventi lo stesso tipo possono essere confusi.
- + supponiamo di voler rappresentare un carrello della spesa contenente elementi della forma
+  supponiamo di voler rappresentare un carrello della spesa contenente elementi della forma
 
        (  nome_prodotto  , peso , prezzo_unitario_prodotto )
 
@@ -352,19 +352,20 @@ e' l'utilizzo di record.
 
 Un record non è che una tupla dove accesso non è per posizione ma attraverso una label
 
-
 *)
 
 // DEFINIRE RECORDS
 // Definizione di un tipo record che permette di rappresentare un elemento del carrello
 
-type Item = { name : string ; weight : float ; uprice : float  } ;;
+type Item = { 
+  name : string ; 
+  weight : float ; 
+  uprice : float  
+}
 
 (*
-
-Viene definito il tipo record Item avente tre label: name, weight, uprice.
-I tipi record vanno sempre definiti esplicitamente.
-
+  Viene definito il tipo record Item avente tre label: name, weight, uprice.
+  I tipi record vanno sempre definiti esplicitamente.
 *)
 
 // CREARE RECORDS
@@ -383,50 +384,61 @@ it1 e' composta dai seguenti campi (field):
 *)   
 
 let it2 = { name = "pere" ; uprice = 2.0 ; weight = 1.5 } ;;
-let it2' = { uprice = 2.0 ; name = "pere" ;  weight = 1.5 } ;;
+let it2u = { uprice = 2.0 ; name = "pere" ;  weight = 1.5 } ;;
 
-// a differenza delle tuple, l' ordine con cui i dati sono elencati e' irrilevante
+// A differenza delle tuple, l' ordine con cui i dati sono elencati e' irrilevante
 
-let b = it2 = it2'
+let b = it2 = it2u
 
 
 (*
+  I record sono immutabili; 
+  non è quindi possibile modificare i campi di it1, it2. 
+  Come nelle liste, si creano nuovi valori. 
+  La sintassi <with> aiuta a creare un nuovo record 
+  da vecchio cambiando un solo campo.
 
-I record sono immutabili; non e' quindi possibile modificare i campi
-di it1, it2. Come nelle liste, si creano nuovi valori. La sintassi
-<with> aiuta a creare un nuovo record da vecchio cambiando un solo campo.
-
-Es: le pere aumentano
+  Es: le pere aumentano
 *)
 
+// Creiamo it3 che è uguale a it2 ma con ** with ** uprice nuovo
+printfn "it2:\n%A\n" it2
 let it3 = { it2 with uprice = 3.0 } ;;
+printfn "it3:\n%A\n" it3
+let it4 = { it2 with uprice = 3.0; weight = 2.1 } ;;
+printfn "it4:\n%A\n" it4
 
-// In vero, esistono anche record mutabili, dove un campo è dichiarato
-// <mutable>. Per ragioni pedagogoche, li evitiamo
+// In verità, esistono anche record mutabili, 
+//  dove un campo è dichiarato <mutable>.
 
 (*** USARE RECORDS: PATTERN MATCHING  ***)
 
 // pattern matching in una let-definition -- records sono tuple, sotto sotto
 
-let   { name = n1 ; weight = w1 ; uprice = p1 } = it1 ;;
+let { 
+      name = n1 ; 
+      weight = w1 ; 
+      uprice = p1 
+    } = it1 ;;
 
 (*
-
 Il pattern matching determina i seguenti binding:
 
- n1  -->  "mele"
- w1  -->   2.5
- p1  -->   2.5
+  n1  -->  "mele"
+  w1  -->   2.5
+  p1  -->   2.5
 
 *)
 
-w1 * p1 ;; //  6.25
+printfn "w1 * p1: %f" (w1 * p1) ;; //  6.25
 
 
-// come al solito, nel pattern si possono usare underscore
-
-
-let   { weight = w2 ; name = _ ; uprice = _ } = it2 ;;
+// Nel pattern possiamo usare underscore per scartare i dati che non interessano
+let { 
+      weight = w2 ; 
+      name = _ ; 
+      uprice = _ 
+    } = it2 ;;
 
 // w2 : float = 1.5
 
@@ -447,22 +459,25 @@ che dato un item ne calcola il costo complessivo.
 
 *)   
 
+// val cost : Item -> float
 let cost item =
   match item with
     {weight = w ; uprice = p} -> w * p ;;
-// val cost : Item -> float
 
-cost it1 ;;  // 6.25 
+printfn "cost1: %f" (cost it1) ;;  // 6.25 
 
 // OPPURE direttamente
 
-let cost1  {weight = w ; uprice = p} = w * p ;; // 3.0
 // val cost1 : Item -> float
+let cost1  {weight = w ; uprice = p} = w * p ;; // 3.0
 
+printfn "cost2: %f" (cost1 it3) ;;  
 
-(* E' possibile accedere a un campo di un record usando la dot notation *)
+(* 
+  E' possibile accedere a un campo di un record usando la dot notation 
+  *)
 
-let cost3 item = item.weight * item.uprice ;;
 // val cost3 : Item -> float
+let cost3 item = item.weight * item.uprice ;;
 
-cost3 it3 ;;  
+printfn "cost3: %f" (cost3 it3) ;;  
