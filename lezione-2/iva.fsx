@@ -1,4 +1,4 @@
-printfn "Esercizio lezione 2 - IVA\n"
+printfn "Esercizio 2 - IVA\n"
 
 (*
 
@@ -97,11 +97,7 @@ let piuIvaWithPiping (cat, basecost) =
 let menoIvaWithPiping (cat, ivacost) =
   ivacost / (cat |> iva |> float |> percent)
 
-
-
 printfn "piping"
 printfn "cat: a, basecost: 1000 => menoIvaWithPiping('a',piuIvaWithPiping('a',1000) => %f" (menoIvaWithPiping('a',piuIvaWithPiping('a',(float 1000))))
 printfn "cat: b, basecost: 1000 => menoIvaWithPiping('b',piuIvaWithPiping('b',1000) => %f" (menoIvaWithPiping('b',piuIvaWithPiping('b',(float 1000))))
 printfn "cat: z, basecost: 1000 => menoIvaWithPiping('z',piuIvaWithPiping('z',1000) => %f" (menoIvaWithPiping('z',piuIvaWithPiping('z',(float 1000))))
-
-
