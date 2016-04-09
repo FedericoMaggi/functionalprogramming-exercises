@@ -206,24 +206,100 @@ do Check.Quick prop_filter_len
       ('a -> bool) -> 'a list -> 'a list * 'a list
 *)
 
+let filter1 pred ls =
+  
+  let rec filt (pred, ls, ok, ko) =
+    match ls with
+    | [] -> ok, ko
+    | x :: xs -> 
+      if pred x 
+        then (filt (pred, xs, ok @ [x], ko))
+        else (filt (pred, xs, ok, ko @ [x]))
+
+  filt (pred, ls, [], [])
+
+(*
+  4.2) Usando filter1 e le definizioni nell'esercizio precedente, costruire le coppie di liste
+
+    p1 =  ( [3; 6; 9; 12; 15; 18] , [1; 2; 4; 5; 7; 8; 10; 11; 13; 14; 16; 17; 19; 20] )
+     //  ( multipli di 3 , non-multipli di 3 ) 
+*)
+
+let mult3_bis n =
+  filter1 (fun x -> x % 3 = 0) [1 .. n]
+
+printfn "%A" (mult3_bis 20)
+
+(*
+  4.3) Usando filter1, definire la funzione
+    
+    multNonmult : int -> int list * int list
+
+  che, dato un intero n, partiziona la lista [1 .. n] 
+  nella coppia di liste  
+
+      ( multipli di 3 , non-multipli di 3 ) 
+
+  Ad esempio:
+
+     multNonmult 16 =   ( [3; 6; 9; 12; 15] , [1; 2; 4; 5; 7; 8; 10; 11; 13; 14; 16] )
+*)
+
+let multNonmult n =
+  filter1 (fun x -> x % 3 = 0) [1 .. n]
+
+(* QUICKCHECK *)
+(*
+  i) prop_filter1_len pred (ls : int list)
+
+    Sia  (xs,ys) il risultato di 'filter1 pred ls'.
+    Allora concatenando xs e ys si ottiene una lista avente la stessa lunghezza di ls.
+*)
+
+let prop_filter1_len pred ls =
+  let xs, ys = filter1 pred ls
+
+  List.length ls = (List.length xs) + (List.length ys)
+
+do Check.Quick prop_filter1_len
+
+(*
+  ii) t prop_filter1_app pred (ls :int list)
+
+    Sia  (xs,ys) il risultato di 'filter1 pred ls'.
+    Allora, concatenando xs e ys si ottiene una lista avente gli stessi elementi di ls.
+*)
 
 
+(* Esercizio 5 *)
+(*
+  Definire la funzione 
 
+       divisori : int -> int list
 
+  che, dato un intero n > 0, restituisce la lista dei suoi divisori
+  (usare opportunamente la funzione filter).
+*)
 
+let divisori n = 
+  filter (fun x -> n % x = 0) [1 .. n]
 
+printfn "divisori di 10: %A" (divisori 10)
+printfn "divisori di 1: %A" (divisori 1)
+printfn "divisori di 3: %A" (divisori 3)
 
+(*
+  Usando la funzione divisori, definire la funzione isPrime che determina se un intero  e' primo.
+  Notare che e' sufficiente scrivere una espressione booleana.
+*)
 
+let isPrime n =
+  List.length(divisori n) <= 2
 
-
-
-
-
-
-
-
-
-
-
-
+printfn "prime 2: %b" (isPrime 2)
+printfn "prime 3: %b" (isPrime 3)
+printfn "prime 10: %b" (isPrime 10)
+printfn "prime 15: %b" (isPrime 15)
+printfn "prime 17: %b" (isPrime 17)
+printfn "prime 19: %b" (isPrime 19)
 
