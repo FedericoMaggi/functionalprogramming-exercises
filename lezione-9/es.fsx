@@ -122,3 +122,108 @@ let prop_map_pres_len f ls =
   (List.length (map f ls)) = (List.length ls)
 
 do Check.Quick prop_map_pres_len
+
+(* Esercizio 3 *)
+(*
+  3.1) Definire la funzione ricorsiva filter tale che, 
+       data una funzione pred (predicato)  e una lista ls  aventi tipo
+
+      pred : 'a -> bool     ls :  'a list
+
+  il  valore di 
+      filter pred ls
+     
+  è la lista di tipo 'a list contenente gli elementi di ls che verificano pred.
+  La lista risultante contiene quindi gli elementi x di ls tali che pred x e' true  
+  (pred funge da filtro).
+
+  Il tipo di filter e':
+
+     filter: ('a -> bool) -> 'a list -> 'a list
+
+  ed e'  una funzione higher-order
+*)
+
+let rec filter pred ls =
+  match ls with
+  | [] -> []
+  | x :: xs -> 
+    if pred x 
+      then x :: (filter pred xs)
+      else filter pred xs
+
+(*
+  3.2) Usando fiter, definire la funzione
+
+    mult3 : int  -> int list
+
+  che costruisce la lista dei multipli di 3 compresi fra 1 e n
+  (applicare in modo opportuno filter sulla lista [1 .. n]).
+*)
+
+let mult3 n =
+  filter (fun x -> x % 3 = 0) [1 .. n]
+
+printfn "%A" (mult3 15)
+
+(* QUICKCHECK *)
+
+(*
+  i) prop_filter pred (ls : int list) 
+
+    filter e List.filter calcolano gli stessi valori.
+*)
+
+let prop_filter pred ls =
+  (filter pred ls) = (List.filter pred ls)
+
+do Check.Quick prop_filter
+
+(*
+  ii)  prop_filter_len pred (ls :int list)
+
+    La lista   'filter pred ls' non puo' essere piu' lunga della lista ls.
+*)
+
+let prop_filter_len pred ls =
+  (List.length (filter pred ls)) <= (List.length ls)
+
+do Check.Quick prop_filter_len
+
+(* Esercizio 4 *)
+(*
+  4.1) Definire la funzione ricorsiva filter1 analoga a filter in cui pero'
+
+     filter1 pred ls = ( lsTrue, lsFalse )
+
+    dove:
+
+      - lsTrue    contiene gli elementi di ls che verificano pred
+      - lsFalse   contiene gli elementi di ls che non verificano pred
+
+    Il tipo di filter1 e':
+
+      ('a -> bool) -> 'a list -> 'a list * 'a list
+*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
